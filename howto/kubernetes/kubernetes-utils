@@ -1,0 +1,45 @@
+# Source this file to make use of a few convenience functions for the Kubernetes setup.
+# For details on how some of this works, see the notebook setting-up-k8s-cluster-with-kind.ipynb
+
+
+# Make sure that a directory for downloaded files exists and is in $PATH
+
+mkdir -p download
+export DOWNLOAD_DIR=$PWD/download
+
+if [[ ":$PATH:" != *":$DOWNLOAD_DIR:"* ]]; then
+    export PATH=$PWD/download:$PATH
+fi
+
+
+# Download kubectl
+
+if [ ! -f "download/kubectl" ]; then
+    echo "Downloading kubectl..."
+    curl -sLo download/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    chmod u+x download/kubectl
+fi
+
+
+# Download kind
+
+if [ ! -f "download/kind" ]; then
+    echo "Downloading kind..."
+    curl -sLo download/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-$(uname)-amd64
+    chmod +x download/kind
+fi
+
+
+# Functions for creating and deleting a kind cluster and setting up KUBECONFIG
+
+function create-kind-cluster {
+    export KIND_CLUSTER_NAME=${1:-default-kind-cluster}
+    kind create cluster --name $KIND_CLUSTER_NAME
+    export KUBECONFIG="$(kind get kubeconfig-path --name="$KIND_CLUSTER_NAME")"
+}
+
+function delete-kind-cluster {
+    unset KUBECONFIG
+    kind delete cluster --name $KIND_CLUSTER_NAME
+    unset KIND_CLUSTER_NAME
+}
