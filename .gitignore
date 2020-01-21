@@ -1,2 +1,5 @@
-venv/*
+venv
+download
+tmp
 .ipynb_checkpoints
+.idea
