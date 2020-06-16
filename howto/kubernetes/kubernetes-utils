@@ -34,7 +34,14 @@ fi
 
 function create-kind-cluster {
     export KIND_CLUSTER_NAME=${1:-default-kind-cluster}
-    kind create cluster --name $KIND_CLUSTER_NAME
+    
+    if [ -n "$2" ]; then
+        KIND_CONFIG=""
+    else
+        KIND_CONFIG="--config $2"
+    fi
+           
+    kind create cluster --name $KIND_CLUSTER_NAME $KIND_CONFIG
     export KUBECONFIG="$(kind get kubeconfig-path --name="$KIND_CLUSTER_NAME")"
 }
 
