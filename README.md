@@ -29,9 +29,12 @@ Most examples are organized as Jupyter notebooks.
 
 # Python virtualenv setup
 
-    virtualenv venv -p python3
+    python -m venv venv
     . venv/bin/activate
     pip install -r requirements.txt
+
+    # Install Jupyter extensions (see https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html)
+    jupyter contrib nbextension install --user
 
     # Initialize bash kernel for Jupyter (see https://github.com/takluyver/bash_kernel)
     python -m bash_kernel.install
